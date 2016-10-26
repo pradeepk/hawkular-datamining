@@ -166,7 +166,7 @@ public class AutomaticForecaster implements Forecaster {
                 return;
             }
 
-            Logger.LOGGER.debugf("Estimating best model for: %s, previous: %s", metricContext.getMetricId(), usedModel);
+            Logger.LOGGER.debug("Estimating best model for: {}, previous: {}", metricContext.getMetricId(), usedModel);
 
             TimeSeriesModel bestModel = null;
             ModelOptimizer bestOptimizer = null;
@@ -193,7 +193,7 @@ public class AutomaticForecaster implements Forecaster {
                     InformationCriterionHolder icHolder = new InformationCriterionHolder(initStatistics.getSse(),
                             currentModel.numberOfParams(), initPoints.size());
 
-                    Logger.LOGGER.debugf("Estimated currentModel: %s, data size: %d,init MSE: %f, %s",
+                    Logger.LOGGER.debug("Estimated currentModel: {}, data size: {},init MSE: {}, {}",
                             currentModel.toString(), initPoints.size(), initStatistics.getMse(), icHolder);
 
                     double currentIc = icHolder.informationCriterion(config.getIc());
@@ -230,7 +230,7 @@ public class AutomaticForecaster implements Forecaster {
                 usedModel = bestModel;
                 counter = 0;
 
-                Logger.LOGGER.debugf("Best model for: %s, is %s, %s", metricContext.getMetricId(),
+                Logger.LOGGER.debug("Best model for: {}, is {}, {}", metricContext.getMetricId(),
                         bestModel.getClass().getSimpleName(), bestModel.initStatistics());
             }
         }

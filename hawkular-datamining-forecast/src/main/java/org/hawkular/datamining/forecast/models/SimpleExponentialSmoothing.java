@@ -185,7 +185,7 @@ public class SimpleExponentialSmoothing extends AbstractExponentialSmoothing {
             }
 
             optimize(new double[]{DEFAULT_LEVEL_SMOOTHING}, costFunction(dataPoints));
-            Logger.LOGGER.debugf("Simple ES: Optimizer best alpha: %f", result[0]);
+            Logger.LOGGER.debug("Simple ES: Optimizer best alpha: {}", result[0]);
 
             SimpleExponentialSmoothing bestModel = new SimpleExponentialSmoothing(result[0], getMetricContext());
             bestModel.init(dataPoints);

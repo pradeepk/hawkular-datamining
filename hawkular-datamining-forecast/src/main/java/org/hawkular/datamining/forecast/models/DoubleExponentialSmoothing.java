@@ -207,7 +207,8 @@ public class DoubleExponentialSmoothing extends AbstractExponentialSmoothing {
             }
 
             optimize(new double[]{DEFAULT_LEVEL_SMOOTHING, DEFAULT_TREND_SMOOTHING}, costFunction(dataPoints));
-            Logger.LOGGER.debugf("Double ES: Optimizer best alpha: %.5f, beta %.5f", result[0], result[1]);
+            Logger.LOGGER.debug("Double ES: Optimizer best alpha: {}, beta {}",
+                    String.format("%.5f", result[0]), String.format("%.5f", result[1]));
 
             DoubleExponentialSmoothing bestModel = new DoubleExponentialSmoothing(result[0], result[1],
                     getMetricContext());

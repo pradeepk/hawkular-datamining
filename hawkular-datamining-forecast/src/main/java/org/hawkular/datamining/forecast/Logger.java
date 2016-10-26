@@ -17,14 +17,13 @@
 
 package org.hawkular.datamining.forecast;
 
-import org.jboss.logging.BasicLogger;
-import org.jboss.logging.annotations.MessageLogger;
+import org.slf4j.LoggerFactory;
+
 
 /**
  * @author Pavol Loffay
  */
-@MessageLogger(projectCode = "HAWKDMING")
-public interface Logger extends BasicLogger {
+public interface Logger  {
 
-    Logger LOGGER = org.jboss.logging.Logger.getMessageLogger(Logger.class, "org.hawkular.datamining.forecast");
+    org.slf4j.Logger LOGGER = LoggerFactory.getLogger(Logger.class);
 }

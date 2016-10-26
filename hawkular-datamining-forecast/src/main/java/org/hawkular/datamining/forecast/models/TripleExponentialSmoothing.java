@@ -304,14 +304,15 @@ public class TripleExponentialSmoothing extends AbstractExponentialSmoothing {
                 optimize(initialGuess, costFunction(dataPoints, periods));
             } catch (MathIllegalStateException ex) {
                 // optimize without seasons
-                Logger.LOGGER.errorf("Triple exponential smoothing optimizer failed to optimize periods", ex);
+                Logger.LOGGER.error("Triple exponential smoothing optimizer failed to optimize periods", ex);
                 periods = 0;
                 double[] initialGuess = initialGuess(initState, periods);
                 optimize(initialGuess, costFunction(dataPoints, periods));
             }
 
-            Logger.LOGGER.debugf("Triple ES: Optimizer best alpha: %.5f, beta %.5f, gamma %.5f",
-                    this.result[0], this.result[1], this.result[2]);
+            Logger.LOGGER.debug("Triple ES: Optimizer best alpha: {}, beta {}, gamma {}",
+                    String.format("%.5f", this.result[0]), String.format("%.5f", this.result[1]),
+                    String.format("%.5f", this.result[2]));
 
             TripleExponentialSmoothing bestModel = model(result, periods, dataPoints.get(0).getTimestamp());
             bestModel.init(dataPoints);
