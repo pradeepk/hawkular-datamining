@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.Collections;
 
 import org.hawkular.datamining.forecast.AbstractTest;
+import org.hawkular.datamining.forecast.DataPoint;
 import org.hawkular.datamining.forecast.ModelData;
 import org.hawkular.datamining.forecast.ModelReader;
 import org.hawkular.datamining.forecast.stats.AccuracyStatistics;
@@ -76,7 +77,8 @@ public class DoubleExponentialSmoothingTest extends AbstractTest {
         TimeSeriesModel continuousModel = new ContinuousModel(
                 DoubleExponentialSmoothing.createWithSmoothingParams(optimizer.result()[0], optimizer.result()[1]));
 
-        rModel.getData().forEach(dataPoint -> continuousModel.learn(dataPoint));
+        for(DataPoint dataPoint : rModel.getData())
+            continuousModel.learn(dataPoint);
 
         AccuracyStatistics batchInitStatistics = modelInit.initStatistics();
         AccuracyStatistics continuousLearnStatistics = continuousModel.runStatistics();

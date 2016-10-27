@@ -136,7 +136,10 @@ public class DoubleExponentialSmoothing extends AbstractExponentialSmoothing {
             slope = dataPoints[1].getValue() - dataPoints[0].getValue();
         } else {
             SimpleRegression regression = new SimpleRegression();
-            initData.forEach(dataPoint -> regression.addData(dataPoint.getTimestamp(), dataPoint.getValue()));
+
+            for (DataPoint dataPoint : initData)
+                regression.addData(dataPoint.getTimestamp(), dataPoint.getValue());
+
             level = regression.predict(initData.get(0).getTimestamp());
             slope = regression.getSlope();
         }
@@ -221,20 +224,23 @@ public class DoubleExponentialSmoothing extends AbstractExponentialSmoothing {
         public MultivariateFunctionMappingAdapter costFunction(final List<DataPoint> dataPoints) {
             // func for minimization
 
-            MultivariateFunction multivariateFunction = point -> {
+            MultivariateFunction multivariateFunction = new MultivariateFunction() {
+                @Override
+                public double value(double[] point) {
 
-                double alpha = point[0];
-                double beta = point[1];
+                    double alpha = point[0];
+                    double beta = point[1];
 
-                if (beta > alpha) {
-                    return Double.POSITIVE_INFINITY;
+                    if (beta > alpha) {
+                        return Double.POSITIVE_INFINITY;
+                    }
+
+                    DoubleExponentialSmoothing doubleExponentialSmoothing = new DoubleExponentialSmoothing(alpha, beta,
+                            getMetricContext());
+                    AccuracyStatistics accuracyStatistics = doubleExponentialSmoothing.init(dataPoints);
+
+                    return accuracyStatistics.getMse();
                 }
-
-                DoubleExponentialSmoothing doubleExponentialSmoothing = new DoubleExponentialSmoothing(alpha, beta,
-                        getMetricContext());
-                AccuracyStatistics accuracyStatistics = doubleExponentialSmoothing.init(dataPoints);
-
-                return accuracyStatistics.getMse();
             };
 
             return new MultivariateFunctionMappingAdapter(multivariateFunction,

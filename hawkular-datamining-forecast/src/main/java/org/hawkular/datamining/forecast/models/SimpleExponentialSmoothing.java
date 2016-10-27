@@ -120,8 +120,11 @@ public class SimpleExponentialSmoothing extends AbstractExponentialSmoothing {
             level = initData.get(0).getValue();
         } else {
             // mean
-            Double sum = initData.stream().map(dataPoint -> dataPoint.getValue())
-                    .reduce((aDouble, aDouble2) -> aDouble + aDouble2).get();
+            double sum = 0;
+
+            for (DataPoint dataPoint: initData)
+                sum = sum + dataPoint.getValue();
+
             level = sum / (double) initData.size();
         }
 
@@ -195,16 +198,20 @@ public class SimpleExponentialSmoothing extends AbstractExponentialSmoothing {
 
         public MultivariateFunctionMappingAdapter costFunction(final List<DataPoint> dataPoints) {
             // func for minimization
-            MultivariateFunction multivariateFunction = point -> {
+            MultivariateFunction multivariateFunction = new MultivariateFunction() {
+                @Override
+                public double value(double[] point) {
 
-                double alpha = point[0];
+                    double alpha = point[0];
 
-                SimpleExponentialSmoothing doubleExponentialSmoothing = new SimpleExponentialSmoothing(alpha,
-                        getMetricContext());
-                AccuracyStatistics accuracyStatistics = doubleExponentialSmoothing.init(dataPoints);
+                    SimpleExponentialSmoothing doubleExponentialSmoothing = new SimpleExponentialSmoothing(alpha,
+                            getMetricContext());
+                    AccuracyStatistics accuracyStatistics = doubleExponentialSmoothing.init(dataPoints);
 
-                return accuracyStatistics.getMse();
+                    return accuracyStatistics.getMse();
+                }
             };
+
             return new MultivariateFunctionMappingAdapter(multivariateFunction,
                     new double[]{MIN_LEVEL_SMOOTHING}, new double[]{MAX_LEVEL_SMOOTHING});
         }

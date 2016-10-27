@@ -20,8 +20,8 @@ package org.hawkular.datamining.forecast.models.performance;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 
+import com.google.common.base.Function;
 import org.apache.commons.math3.optim.InitialGuess;
 import org.apache.commons.math3.optim.MaxEval;
 import org.apache.commons.math3.optim.MaxIter;
@@ -81,10 +81,29 @@ public class OptimizationAlgorithmsTests extends AbstractTest {
     public void performanceTest() throws IOException {
         final int numberOfExecutions = 5;
 
-        testCase(numberOfExecutions, rModel, this::executeSimplex, "Simplex");
-        testCase(numberOfExecutions, rModel, this::executeMultidirectionalSimplex, "Multidirectional Simplex");
-        testCase(numberOfExecutions, rModel, this::executePowell, "Powell");
-        testCase(numberOfExecutions, rModel, this::executeBobyQA, "BobyQA");
+        testCase(numberOfExecutions, rModel, new Function<ModelData, Long>() {
+            public Long apply(ModelData data) {
+                return executeSimplex(data);
+            }
+        }, "Simplex");
+        testCase(numberOfExecutions, rModel, new Function<ModelData, Long>() {
+            @Override
+            public Long apply(ModelData modelData) {
+                return executeMultidirectionalSimplex(modelData);
+            }
+        }, "Multidirectional Simplex");
+        testCase(numberOfExecutions, rModel, new Function<ModelData, Long>() {
+            @Override
+            public Long apply(ModelData modelData) {
+                return executePowell(modelData);
+            }
+        }, "Powell");
+        testCase(numberOfExecutions, rModel, new Function<ModelData, Long>() {
+            @Override
+            public Long apply(ModelData modelData) {
+                return executeBobyQA(modelData);
+            }
+        }, "BobyQA");
     }
 
     private void testCase(int numberOfExecutions, ModelData modelData, Function<ModelData, Long> fce, String name) {

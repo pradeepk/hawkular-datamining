@@ -323,17 +323,20 @@ public class TripleExponentialSmoothing extends AbstractExponentialSmoothing {
         private MultivariateFunctionMappingAdapter costFunction(final List<DataPoint> dataPoints,
                                                                 final int periodsToOptimize) {
             // func for minimization
-            MultivariateFunction multivariateFunction = point -> {
+            MultivariateFunction multivariateFunction = new MultivariateFunction() {
+                @Override
+                public double value(double[] point) {
 
-                if (point[1] >= point[0]) {
-                    return Double.POSITIVE_INFINITY;
+                    if (point[1] >= point[0]) {
+                        return Double.POSITIVE_INFINITY;
+                    }
+
+                    TripleExponentialSmoothing tripleExponentialSmoothing = model(point, periodsToOptimize,
+                            dataPoints.get(0).getTimestamp());
+                    AccuracyStatistics accuracyStatistics = tripleExponentialSmoothing.init(dataPoints);
+
+                    return accuracyStatistics.getMse();
                 }
-
-                TripleExponentialSmoothing tripleExponentialSmoothing = model(point, periodsToOptimize,
-                        dataPoints.get(0).getTimestamp());
-                AccuracyStatistics accuracyStatistics = tripleExponentialSmoothing.init(dataPoints);
-
-                return accuracyStatistics.getMse();
             };
 
             double[][] minMax = parametersMinMax(periodsToOptimize);

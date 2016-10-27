@@ -284,13 +284,13 @@ public class AugmentedDickeyFullerTest {
                 new double[]{4.4735, 7.1757, -2.0681, -2.1196},
         });
 
-        ADF_TAU_LARGEP.entrySet().stream().forEach(typeEntry -> {
+        for (Map.Entry<?, double[][]>typeEntry : ADF_TAU_LARGEP.entrySet()) {
             double[][] values = typeEntry.getValue();
             for (int i = 0; i < values.length; i++) {
                 for (int j = 0; j < values[i].length; j++) {
                     values[i][j] = values[i][j]*ADF_LARGE_SCALING[j];
                 }
             }
-        });
+        }
     }
 }

@@ -19,8 +19,8 @@ package org.hawkular.datamining.forecast.models.performance;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 
+import com.google.common.base.Function;
 import org.hawkular.datamining.forecast.DataPoint;
 import org.hawkular.datamining.forecast.ModelData;
 import org.junit.Ignore;
@@ -47,12 +47,27 @@ public class OpenForecastPerformanceTest extends AbstractPerformanceTest {
 
     @Test
     public void testPerformance() {
-        testCaseAverageExecutionTime(5, dataSetSineMediumLength, SimpleExponentialSmoothingModel::getBestFitModel,
-                SimpleExponentialSmoothingModel.class.getName());
-        testCaseAverageExecutionTime(5, dataSetSineMediumLength, DoubleExponentialSmoothingModel::getBestFitModel,
-                DoubleExponentialSmoothingModel.class.getName());
-        testCaseAverageExecutionTime(5, dataSetSineMediumLength, TripleExponentialSmoothingModel::getBestFitModel,
-                TripleExponentialSmoothingModel.class.getName());
+
+        testCaseAverageExecutionTime(5, dataSetSineMediumLength,
+                new Function<DataSet, ForecastingModel>() {
+                    @Override
+                    public ForecastingModel apply(DataSet dataSet) {
+                        return SimpleExponentialSmoothingModel.getBestFitModel(dataSet);
+                    }
+                }, SimpleExponentialSmoothingModel.class.getName());
+        testCaseAverageExecutionTime(5, dataSetSineMediumLength,
+                new Function<DataSet, ForecastingModel>() {
+                    @Override
+                    public ForecastingModel apply(DataSet dataSet) {
+                        return DoubleExponentialSmoothingModel.getBestFitModel(dataSet);
+                    }
+                }, DoubleExponentialSmoothingModel.class.getName());
+        testCaseAverageExecutionTime(5, dataSetSineMediumLength, new Function<DataSet, ForecastingModel>() {
+                    @Override
+                    public ForecastingModel apply(DataSet dataSet) {
+                        return DoubleExponentialSmoothingModel.getBestFitModel(dataSet);
+                    }
+                }, TripleExponentialSmoothingModel.class.getName());
     }
 
     public void testCaseAverageExecutionTime(int numberOfExecutions, DataSet dataSet,
