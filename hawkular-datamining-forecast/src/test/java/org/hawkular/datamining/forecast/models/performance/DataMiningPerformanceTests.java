@@ -17,8 +17,8 @@
 
 package org.hawkular.datamining.forecast.models.performance;
 
+import java.util.function.Function;
 
-import com.google.common.base.Function;
 import org.hawkular.datamining.forecast.MetricContext;
 import org.hawkular.datamining.forecast.ModelData;
 import org.hawkular.datamining.forecast.models.DoubleExponentialSmoothing;
@@ -36,26 +36,11 @@ public class DataMiningPerformanceTests extends AbstractPerformanceTest {
 
     @Test
     public void testPerformance() {
-        testCaseAverageExecutionTime(5, modelData, metricContext, new Function<MetricContext, ModelOptimizer>() {
-                    @Override
-                    public ModelOptimizer apply(MetricContext metricContext) {
-                        return SimpleExponentialSmoothing.optimizer(metricContext);
-                    }
-                },
+        testCaseAverageExecutionTime(5, modelData, metricContext, SimpleExponentialSmoothing::optimizer,
                 SimpleExponentialSmoothing.class.getName());
-        testCaseAverageExecutionTime(5, modelData, metricContext, new Function<MetricContext, ModelOptimizer>() {
-                    @Override
-                    public ModelOptimizer apply(MetricContext metricContext) {
-                        return DoubleExponentialSmoothing.optimizer(metricContext);
-                    }
-                },
+        testCaseAverageExecutionTime(5, modelData, metricContext, DoubleExponentialSmoothing::optimizer,
                 DoubleExponentialSmoothing.class.getName());
-        testCaseAverageExecutionTime(5, modelData, metricContext, new Function<MetricContext, ModelOptimizer>() {
-                    @Override
-                    public ModelOptimizer apply(MetricContext metricContext) {
-                        return TripleExponentialSmoothing.optimizer(metricContext);
-                    }
-                },
+        testCaseAverageExecutionTime(5, modelData, metricContext, TripleExponentialSmoothing::optimizer,
                 TripleExponentialSmoothing.class.getName());
     }
 

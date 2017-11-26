@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 
 import org.hawkular.datamining.forecast.models.DoubleExponentialSmoothing;
 import org.hawkular.datamining.forecast.models.ModelOptimizer;
@@ -30,7 +31,6 @@ import org.hawkular.datamining.forecast.models.TripleExponentialSmoothing;
 import org.hawkular.datamining.forecast.stats.AccuracyStatistics;
 import org.hawkular.datamining.forecast.stats.InformationCriterionHolder;
 
-import com.google.common.base.Function;
 import com.google.common.collect.EvictingQueue;
 
 /**
@@ -68,26 +68,9 @@ public class AutomaticForecaster implements Forecaster {
         config.getConceptDriftStrategy().forecaster = this;
 
         this.applicableModels = Collections.unmodifiableList(Arrays.asList(
-                new Function<MetricContext, ModelOptimizer>() {
-                    @Override
-                    public ModelOptimizer apply(MetricContext metricContext) {
-                        return SimpleExponentialSmoothing.optimizer(metricContext);
-                    }
-                },
-                new Function<MetricContext, ModelOptimizer>() {
-                    @Override
-                    public ModelOptimizer apply(MetricContext metricContext) {
-                        return DoubleExponentialSmoothing.optimizer(metricContext);
-                    }
-
-                },
-                new Function<MetricContext, ModelOptimizer>() {
-                    @Override
-                    public ModelOptimizer apply(MetricContext metricContext) {
-                        return TripleExponentialSmoothing.optimizer(metricContext);
-                    }
-
-                }));
+                SimpleExponentialSmoothing::optimizer,
+                DoubleExponentialSmoothing::optimizer,
+                TripleExponentialSmoothing::optimizer));
 
         this.window = EvictingQueue.create(config.getWindowsSize());
     }
@@ -164,7 +147,7 @@ public class AutomaticForecaster implements Forecaster {
             }
 
             config.update(update);
-            selectBestModel(Collections.<DataPoint>emptyList());
+            selectBestModel(Collections.emptyList());
         }
     }
 

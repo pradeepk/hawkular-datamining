@@ -81,8 +81,7 @@ public abstract class AbstractExponentialSmoothing implements TimeSeriesModel {
             initState(dataPoints);
         }
 
-        for (DataPoint dataPoint: dataPoints)
-              learn(dataPoint);
+        dataPoints.forEach(dataPoint -> learn(dataPoint));
 
         initAccuracy = new AccuracyStatistics(sse, sse/dataPoints.size(), absSum/dataPoints.size());
         counter = 0L;
@@ -122,8 +121,7 @@ public abstract class AbstractExponentialSmoothing implements TimeSeriesModel {
             return;
         }
 
-        for (DataPoint dataPoint : dataPoints)
-            learn(dataPoint);
+        dataPoints.forEach(dataPoint -> learn(dataPoint));
     }
 
     @Override

@@ -48,7 +48,7 @@ public class AutomaticForecasterTest extends AbstractTest {
     @Test
     public void testModelSelectionNonSeasonal() {
 
-        for (String test: nonSeasonalModels) {
+        nonSeasonalModels.forEach(test -> {
             try {
                 ModelData rModel = ModelReader.read(test);
 
@@ -66,7 +66,7 @@ public class AutomaticForecasterTest extends AbstractTest {
             } catch (IOException e) {
                 Assert.fail();
             }
-        }
+        });
     }
 
     @Test
@@ -75,7 +75,7 @@ public class AutomaticForecasterTest extends AbstractTest {
         double ACCURACY_LOW = 0.65;
         double ACCURACY_HIGH = 1.4;
 
-        for (String test : seasonalModels) {
+        seasonalModels.forEach(test -> {
             try {
                 ModelData rModel = ModelReader.read(test);
 
@@ -95,7 +95,7 @@ public class AutomaticForecasterTest extends AbstractTest {
             } catch (IOException e) {
                 Assert.fail();
             }
-        }
+        });
     }
 
     @Test
@@ -103,7 +103,7 @@ public class AutomaticForecasterTest extends AbstractTest {
         double ACCURACY_LOW = 0.65;
         double ACCURACY_HIGH = 1.10;
 
-        for (String test : nonSeasonalModels) {
+        nonSeasonalModels.forEach(test -> {
             try {
                 ModelData rModel = ModelReader.read(test);
 
@@ -126,7 +126,7 @@ public class AutomaticForecasterTest extends AbstractTest {
             } catch (IOException e) {
                 Assert.fail("IOException, test file is probably missing");
             }
-        }
+        });
     }
 
     @Test
@@ -136,12 +136,12 @@ public class AutomaticForecasterTest extends AbstractTest {
         Forecaster forecaster =
                 new AutomaticForecaster(new ImmutableMetricContext("", rModel.getName(), 1L));
 
-        for (DataPoint dataPoint : rModel.getData()) {
+        rModel.getData().forEach(dataPoint -> {
             forecaster.learn(dataPoint);
 
             Assert.assertEquals("extected: " + rModel.getModel() + ", MSE=" + rModel.getMse(),
                     rModel.getModel(), forecaster.model().getClass());
-        }
+        });
     }
 
     @Test
@@ -171,16 +171,14 @@ public class AutomaticForecasterTest extends AbstractTest {
                 new AutomaticForecaster(new ImmutableMetricContext("", "empty", 1L));
 
         try {
-            forecaster.learn(Collections.<DataPoint>emptyList());
+            forecaster.learn(Collections.emptyList());
         } catch (Throwable ex) {
             Assert.fail();
         }
 
         ModelData rModel = ModelReader.read("trendStatUpwardLowVar");
 
-        for(DataPoint dataPoint : rModel.getData()) {
-            forecaster.learn(dataPoint);
-        }
+        rModel.getData().forEach(dataPoint -> forecaster.learn(dataPoint));
     }
 
 
