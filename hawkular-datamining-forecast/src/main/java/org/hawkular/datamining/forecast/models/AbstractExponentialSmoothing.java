@@ -112,8 +112,7 @@ public abstract class AbstractExponentialSmoothing implements TimeSeriesModel {
     @Override
     public void learn(List<DataPoint> dataPoints) {
 
-        if (dataPoints.size() > 1)
-            Collections.sort(dataPoints, dataPointComparator);
+        Collections.sort(dataPoints, dataPointComparator);
 
         if (initAccuracy == null && dataPoints.size() >= minimumInitSize()) {
             AccuracyStatistics init = init(dataPoints);
