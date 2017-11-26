@@ -17,7 +17,7 @@
 
 package org.hawkular.datamining.forecast.models;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 import java.io.IOException;
 import java.util.ArrayList;
